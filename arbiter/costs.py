@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
+
 def _cost_per_token():
     """Lazily import LiteLLM's cost_per_token to avoid import-time issues in tests.
 

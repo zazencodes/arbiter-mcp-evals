@@ -3,13 +3,8 @@
 import argparse
 from pathlib import Path
 
-
-from .commands import (
-    create_example_command,
-    council_command,
-    forge_command,
-    run_command as _run_command,
-)
+from .commands import (council_command, create_example_command, forge_command,
+                       run_command as _run_command,)
 from .evaluator import MCPEvaluator  # re-export for tests expecting attribute on module
 
 

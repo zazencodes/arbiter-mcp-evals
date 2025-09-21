@@ -1,8 +1,8 @@
 """LLM-as-a-judge implementation for Arbiter evaluations."""
 
+import logging
 import re
 from typing import Callable, Optional
-import logging
 
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage

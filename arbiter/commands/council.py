@@ -3,10 +3,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, Response
-import uvicorn
 
 
 def council_command(

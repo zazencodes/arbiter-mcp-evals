@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import json
 import sys
+from importlib.resources import files
 from pathlib import Path
 
-from importlib.resources import files
 from rich.console import Console
 
 

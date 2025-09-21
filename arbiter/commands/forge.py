@@ -5,18 +5,13 @@ import os
 import sys
 from pathlib import Path
 
-from rich.console import Console
-
 # Providers for LLM calls
 from langchain_anthropic import ChatAnthropic
-from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
+from rich.console import Console
 
-from .common import (
-    RECOMMENDED_MODELS,
-    REQUIRED_ENV_BY_PROVIDER,
-    provider_from_model_id,
-)
+from .common import RECOMMENDED_MODELS, REQUIRED_ENV_BY_PROVIDER, provider_from_model_id
 
 
 def forge_command(

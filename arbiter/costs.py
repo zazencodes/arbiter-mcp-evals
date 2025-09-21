@@ -11,7 +11,6 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from litellm import cost_per_token
 
-
 ANTHROPIC_MODELS_DOC = "https://docs.anthropic.com/en/docs/about-claude/models/overview"
 
 

@@ -1,4 +1,4 @@
-from arbiter.utils import extract_text_from_agent_result, ensure_output_dir
+from arbiter.utils import ensure_output_dir, extract_text_from_agent_result
 
 
 def test_extract_text_from_agent_result_with_output_key():

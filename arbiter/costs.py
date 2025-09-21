@@ -9,7 +9,16 @@ from __future__ import annotations
 
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from litellm import cost_per_token
+def _cost_per_token():
+    """Lazily import LiteLLM's cost_per_token to avoid import-time issues in tests.
+
+    Returns the function if available, otherwise None.
+    """
+    try:
+        from litellm import cost_per_token as _cpt  # type: ignore
+        return _cpt
+    except Exception:
+        return None
 
 ANTHROPIC_MODELS_DOC = "https://docs.anthropic.com/en/docs/about-claude/models/overview"
 
@@ -41,7 +50,12 @@ def compute_cost_usd(
     litellm_model, provider, model_name = litellm_model_from_model_id(model_id)
 
     try:
-        result = cost_per_token(
+        cpt = _cost_per_token()
+        if cpt is None:
+            if warn:
+                _maybe_warn_unknown_model(warn, provider, model_name)
+            return 0.0
+        result = cpt(
             model=litellm_model,
             prompt_tokens=int(input_tokens or 0),
             completion_tokens=int(output_tokens or 0),
@@ -156,6 +170,7 @@ class CostCache:
         self, model_ids: List[str], warn: Callable[[str], None] | None = None
     ) -> None:
         seen: set[str] = set()
+        cpt = _cost_per_token()
         for mid in model_ids:
             if mid in seen:
                 continue
@@ -164,8 +179,10 @@ class CostCache:
             in_per_1k: Optional[float]
             out_per_1k: Optional[float]
             try:
-                in_raw = cost_per_token(model=name, prompt_tokens=1000, completion_tokens=0)
-                out_raw = cost_per_token(model=name, prompt_tokens=0, completion_tokens=1000)
+                if cpt is None:
+                    raise ImportError("litellm not available")
+                in_raw = cpt(model=name, prompt_tokens=1000, completion_tokens=0)
+                out_raw = cpt(model=name, prompt_tokens=0, completion_tokens=1000)
                 in_per_1k = _extract_component_cost(in_raw, component="input")
                 out_per_1k = _extract_component_cost(out_raw, component="output")
                 if in_per_1k is None or out_per_1k is None:

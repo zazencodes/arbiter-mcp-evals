@@ -62,36 +62,40 @@ def run_command(
             sys.exit(1)
 
         # Validate environment keys based on providers in models and judge.model
-        def provider_from_model_id(model_id: str) -> str:
-            # expected syntax: provider:model
-            if ":" in model_id:
-                return model_id.split(":", 1)[0].strip()
-            return "unknown"
+        # Only enforce when using the real MCPEvaluator; allow tests to inject a stub.
+        should_validate_credentials = evaluator_class is None or evaluator_class is MCPEvaluator
 
-        providers = set(provider_from_model_id(m) for m in config.models)
-        if config.judge and getattr(config.judge, "model", None):
-            providers.add(provider_from_model_id(config.judge.model))
+        if should_validate_credentials:
+            def provider_from_model_id(model_id: str) -> str:
+                # expected syntax: provider:model
+                if ":" in model_id:
+                    return model_id.split(":", 1)[0].strip()
+                return "unknown"
 
-        # Map providers to required env vars
-        required_env_by_provider = {
-            "anthropic": "ANTHROPIC_API_KEY",
-            "openai": "OPENAI_API_KEY",
-            "google": "GOOGLE_API_KEY",
-        }
+            providers = set(provider_from_model_id(m) for m in config.models)
+            if config.judge and getattr(config.judge, "model", None):
+                providers.add(provider_from_model_id(config.judge.model))
 
-        missing = []
-        for p in providers:
-            env_var = required_env_by_provider.get(p)
-            if env_var and not os.getenv(env_var):
-                missing.append((p, env_var))
+            # Map providers to required env vars
+            required_env_by_provider = {
+                "anthropic": "ANTHROPIC_API_KEY",
+                "openai": "OPENAI_API_KEY",
+                "google": "GOOGLE_API_KEY",
+            }
 
-        if missing:
-            lines = [f"  - {p}: set {env_var}" for p, env_var in missing]
-            console.print(
-                "⚠️ Missing required API credentials for configured providers:\n" + "\n".join(lines),
-                style="red",
-            )
-            sys.exit(1)
+            missing = []
+            for p in providers:
+                env_var = required_env_by_provider.get(p)
+                if env_var and not os.getenv(env_var):
+                    missing.append((p, env_var))
+
+            if missing:
+                lines = [f"  - {p}: set {env_var}" for p, env_var in missing]
+                console.print(
+                    "⚠️ Missing required API credentials for configured providers:\n" + "\n".join(lines),
+                    style="red",
+                )
+                sys.exit(1)
 
         config.output_dir = str(config_file.parent)
 

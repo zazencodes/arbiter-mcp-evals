@@ -371,7 +371,7 @@ git clone https://github.com/zazencodes/arbiter-mcp-evals
 cd arbiter-mcp-evals
 
 # Install dependencies
-uv sync --dev
+uv sync --extra dev
 
 # Run tests
 uv run pytest

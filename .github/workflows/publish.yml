@@ -27,7 +27,7 @@ jobs:
       run: uv python install ${{ matrix.python-version }}
 
     - name: Install dependencies
-      run: uv sync --dev
+      run: uv sync --extra dev
 
     - name: Run linting
       run: |
@@ -43,7 +43,7 @@ jobs:
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
-      if: matrix.python-version == '3.11'
+      if: matrix.python-version == '3.12'
       with:
         file: ./coverage.xml
 

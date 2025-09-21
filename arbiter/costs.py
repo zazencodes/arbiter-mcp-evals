@@ -17,9 +17,11 @@ def _cost_per_token():
     """
     try:
         from litellm import cost_per_token as _cpt  # type: ignore
+
         return _cpt
     except Exception:
         return None
+
 
 ANTHROPIC_MODELS_DOC = "https://docs.anthropic.com/en/docs/about-claude/models/overview"
 

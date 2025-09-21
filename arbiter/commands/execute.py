@@ -66,6 +66,7 @@ def run_command(
         should_validate_credentials = evaluator_class is None or evaluator_class is MCPEvaluator
 
         if should_validate_credentials:
+
             def provider_from_model_id(model_id: str) -> str:
                 # expected syntax: provider:model
                 if ":" in model_id:
@@ -92,7 +93,8 @@ def run_command(
             if missing:
                 lines = [f"  - {p}: set {env_var}" for p, env_var in missing]
                 console.print(
-                    "⚠️ Missing required API credentials for configured providers:\n" + "\n".join(lines),
+                    "⚠️ Missing required API credentials for configured providers:\n"
+                    + "\n".join(lines),
                     style="red",
                 )
                 sys.exit(1)
